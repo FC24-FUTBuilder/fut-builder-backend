@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-
 const userSchema = new mongoose.Schema(
   {
     username: {
@@ -18,6 +17,10 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
       required: true,
+    },
+    team: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Team",
     },
   },
   {
