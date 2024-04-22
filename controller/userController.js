@@ -40,12 +40,14 @@ exports.loginUser = async (req, res) => {
       Message: "body cannot be empty",
     });
   } else {
-    await User.findOne({ username: reqBody.username })
+    await User.findOne({
+      $or: [{ username: reqBody.username }, { email: reqBody.username }],
+    })
       .then((user) => {
         if (!user) {
           res.status(404).send({
             Status: "Failed",
-            Message: "User not found",
+            Message: "User not found, Please register",
           });
         } else {
           if (user.password === reqBody.password) {
@@ -71,7 +73,23 @@ exports.loginUser = async (req, res) => {
       });
   }
 };
-
+exports.listUsers = async (req, res) => {
+  await User.find()
+    .then((users) => {
+      res.status(200).json({
+        Status: "Success",
+        Message: "Users Retrieved",
+        data: users,
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({
+        Status: "Failed",
+        Message: "Internal Server Error",
+        data: err.message,
+      });
+    });
+};
 /**
  * Need to create showUsers, updateUsers, deleteUser functionality
  */

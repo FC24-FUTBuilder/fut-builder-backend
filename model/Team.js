@@ -8,6 +8,9 @@ let teamSchema = new mongoose.Schema(
         required: true,
       },
     ],
+    formation: {
+      type: String,
+    },
     overallRating: {
       type: Number,
       // required: true,
