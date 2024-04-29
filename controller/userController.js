@@ -93,3 +93,29 @@ exports.listUsers = async (req, res) => {
 /**
  * Need to create showUsers, updateUsers, deleteUser functionality
  */
+exports.updateUser = async (req, res) => {
+  const username = req.query.username;
+  const reqBody = req.body;
+  if (!reqBody) {
+    return res.status(400).send({
+      Status: "Failed",
+      Message: "body cannot be empty",
+    });
+  } else {
+    await User.findOneAndUpdate({ username: username }, reqBody)
+      .then((user) => {
+        return res.status(200).json({
+          Status: "Success",
+          Message: "User Updated",
+          data: user,
+        });
+      })
+      .catch((err) => {
+        return res.status(500).json({
+          Status: "Failed",
+          Message: "Internal Server Error",
+          data: err.message,
+        });
+      });
+  }
+};

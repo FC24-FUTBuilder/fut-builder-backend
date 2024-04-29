@@ -4,11 +4,26 @@ exports.listPlayers = async (req, res) => {
   if (req.query.pos) {
     console.log("Called with param");
     const pos = req.query.pos;
-    const page = parseInt(req.query.page, 10) || 1;
     await Player.find({ position: pos })
       .select("name nation club overall _id")
-      .limit(10)
-      .skip((page - 1) * 10)
+      .then((players) => {
+        res.status(200).json({
+          Status: "Success",
+          Message: "Players Retrieved",
+          data: players,
+        });
+      })
+      .catch((err) => {
+        res.status(500).json({
+          Status: "Failed",
+          Message: "Internal Server Error",
+          data: err.message,
+        });
+      });
+  } else if (req.query.name) {
+    const name = req.query.name;
+    await Player.find({ name: { $regex: new RegExp(name, "i") } })
+      .select("name nation club overall _id")
       .then((players) => {
         res.status(200).json({
           Status: "Success",
@@ -24,11 +39,8 @@ exports.listPlayers = async (req, res) => {
         });
       });
   } else {
-    const page = parseInt(req.query.page, 10) || 1;
     await Player.find()
       .select("name nation club overall _id")
-      .limit(10)
-      .skip((page - 1) * 10)
       .then((players) => {
         res.status(200).json({
           Status: "Success",
@@ -38,6 +50,33 @@ exports.listPlayers = async (req, res) => {
       })
       .catch((err) => {
         res.status(500).json({
+          Status: "Failed",
+          Message: "Internal Server Error",
+          data: err.message,
+        });
+      });
+  }
+};
+
+exports.editPlayerDetails = async (req, res) => {
+  const id = req.query.id;
+  const reqBody = req.body;
+  if (!reqBody) {
+    return res.status(400).send({
+      Status: "Failed",
+      Message: "body cannot be empty",
+    });
+  } else {
+    await Player.findOneAndUpdate({ _id: id }, reqBody)
+      .then((player) => {
+        return res.status(200).json({
+          Status: "Success",
+          Message: "Player Updated",
+          data: player,
+        });
+      })
+      .catch((err) => {
+        return res.status(500).json({
           Status: "Failed",
           Message: "Internal Server Error",
           data: err.message,

@@ -23,7 +23,7 @@ const Team = require("./model/Team");
 
 const userRoutes = require("./routes/userRoutes.js");
 const playerRoutes = require("./routes/playerRoutes.js");
-// const teamRoutes = require("./routes/teamRoutes.js");
+const teamRoutes = require("./routes/teamRoutes.js");
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: "5mb" }));
@@ -39,65 +39,11 @@ mongoose
 
 app.use("/users", userRoutes);
 app.use("/players", playerRoutes);
-// app.use("/teams", teamRoutes);
+app.use("/teams", teamRoutes);
 /**
  * This can be changed later to just have JSON data in the body
  * Used file upload functionality to check if the data is added to the database correctly
  */
-
-app.post("/teams/create", async (req, res) => {
-  const reqBody = req.body;
-  if (!reqBody) {
-    res.status(400).send({
-      Status: "Failed",
-      Message: "body cannot be empty",
-    });
-  } else {
-    // const newTeam = new Team({
-    //   players: reqBody.players,
-    //   overallRating: reqBody.overallRating,
-    //   teamChemistry: reqBody.teamChemistry,
-    // });
-
-    const teamData = new Team({
-      players: reqBody.players,
-    });
-    await Team.create(teamData)
-      .then((team) => {
-        res.status(200).json({
-          Status: "Success",
-          Message: "Team Created",
-          data: team.toJSON(),
-        });
-      })
-      .catch((err) => {
-        res.status(500).json({
-          Status: "Failed",
-          Message: "Internal Server Error",
-          data: err.message,
-        });
-      });
-  }
-});
-
-app.get("/teams/get", async (req, res) => {
-  await Team.find()
-    .populate("players")
-    .then((teams) => {
-      res.status(200).json({
-        Status: "Success",
-        Message: "Teams Retrieved",
-        data: teams,
-      });
-    })
-    .catch((err) => {
-      res.status(500).json({
-        Status: "Failed",
-        Message: "Internal Server Error",
-        data: err.message,
-      });
-    });
-});
 
 app.post("/upload", upload.single("file"), async (req, res) => {
   const playersData = [];
