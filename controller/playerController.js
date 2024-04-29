@@ -85,6 +85,24 @@ exports.editPlayerDetails = async (req, res) => {
   }
 };
 
+exports.deletePlayerDetails = async (req, res) => {
+  const id = req.query.id;
+  await Player.findByIdAndDelete({ _id: id })
+    .then((player) => {
+      return res.status(200).json({
+        Status: "Success",
+        Message: "Player Deleted",
+      });
+    })
+    .catch((err) => {
+      return res.status(500).json({
+        Status: "Failed",
+        Message: "Internal Server Error",
+        data: err.message,
+      });
+    });
+};
+
 exports.getPlayerDetails = async (req, res) => {
   const id = req.query.id;
   await Player.findOne({ _id: id })

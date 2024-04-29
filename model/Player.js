@@ -28,27 +28,21 @@ let playerSchema = new mongoose.Schema(
     },
     pace: {
       type: Number,
-      required: true,
     },
     shooting: {
       type: Number,
-      required: true,
     },
     passing: {
       type: Number,
-      required: true,
     },
     dribbling: {
       type: Number,
-      required: true,
     },
     defending: {
       type: Number,
-      required: true,
     },
     physicality: {
       type: Number,
-      required: true,
     },
     card_image: {
       type: String,
